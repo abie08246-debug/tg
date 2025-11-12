@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        .user-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .default-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #0088cc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello, Telegram!</h1>
+    
+    <div class="user-container">
+        <div id="avatar-container">
+            <!-- Аватар будет добавлен через JavaScript -->
+        </div>
+        <div class="user-info">
+            <p id="user-info">Loading...</p>
+        </div>
+    </div>
+    
+    <button onclick="window.Telegram.WebApp.close()">Закрыть</button>
+
+    <script>
+        // Инициализация
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        // Показ информации о пользователе
+        const user = tg.initDataUnsafe?.user;
+        const avatarContainer = document.getElementById('avatar-container');
+        const userInfoElement = document.getElementById('user-info');
+
+        if (user) {
+            // Отображаем информацию о пользователе
+            userInfoElement.textContent = `Привет, ${user.first_name}${user.last_name ? ' ' + user.last_name : ''}!`;
+            
+            // Создаем аватар пользователя
+            if (user.photo_url) {
+                // Если есть URL фото, используем его
+                const avatarImg = document.createElement('img');
+                avatarImg.src = user.photo_url;
+                avatarImg.alt = `${user.first_name}'s avatar`;
+                avatarImg.className = 'user-avatar';
+                avatarContainer.appendChild(avatarImg);
+            } else {
+                // Если нет фото, создаем аватар с первой буквой имени
+                const defaultAvatar = document.createElement('div');
+                defaultAvatar.className = 'default-avatar';
+                defaultAvatar.textContent = user.first_name ? user.first_name[0].toUpperCase() : 'U';
+                avatarContainer.appendChild(defaultAvatar);
+            }
+        } else {
+            userInfoElement.textContent = 'Пользователь не найден';
+            // Создаем стандартный аватар для неавторизованного пользователя
+            const defaultAvatar = document.createElement('div');
+            defaultAvatar.className = 'default-avatar';
+            defaultAvatar.textContent = '?';
+            avatarContainer.appendChild(defaultAvatar);
+        }
+    </script>
+</body>
+</html>
+
+<!--https://img.icons8.com/?size=100&id=1f2hiZGACOsP&format=png&color=000000-->
